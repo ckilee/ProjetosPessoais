@@ -1,9 +1,12 @@
 package projetos.inatel.br.projetospessoais;
 
 import android.app.Activity;
+import android.database.sqlite.SQLiteDatabase;
 import android.os.Bundle;
 import android.view.Menu;
 import android.view.MenuItem;
+
+import projetos.inatel.br.projetospessoais.model.ProjectDAO;
 
 
 public class MainActivity extends Activity {
@@ -12,6 +15,8 @@ public class MainActivity extends Activity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+        ProjectDAO projectDAO = new ProjectDAO(getApplicationContext());
+        SQLiteDatabase db = projectDAO.getWritableDatabase();
     }
 
     @Override
