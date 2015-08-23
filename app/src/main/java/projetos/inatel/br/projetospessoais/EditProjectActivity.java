@@ -3,6 +3,7 @@ package projetos.inatel.br.projetospessoais;
 import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
+import android.database.sqlite.SQLiteDatabase;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.net.Uri;
@@ -23,9 +24,13 @@ import android.widget.Toast;
 import java.io.File;
 import java.io.FileOutputStream;
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
 import java.util.Date;
 
 import projetos.inatel.br.projetospessoais.R;
+import projetos.inatel.br.projetospessoais.model.Image;
+import projetos.inatel.br.projetospessoais.model.Project;
+import projetos.inatel.br.projetospessoais.model.ProjectDAO;
 
 public class EditProjectActivity extends Activity {
     private int CAMERA_REQUEST = 0;
@@ -34,6 +39,11 @@ public class EditProjectActivity extends Activity {
     public static final int MEDIA_TYPE_IMAGE = 1;
     public static final int MEDIA_TYPE_VIDEO = 2;
     private int numberOfPictures = 0;
+    private ProjectDAO projectDAO;
+    private EditText descriptionEditText;
+    private EditText nameEditText;
+    private LinearLayout picturesTableLayout;
+    private ArrayList<ImageViewContainer> imageViewContainerList;
 
     /** Create a file Uri for saving an image or video */
     private static Uri getOutputMediaFileUri(int type){
@@ -45,6 +55,12 @@ public class EditProjectActivity extends Activity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_edit_project);
         configureButtons();
+        descriptionEditText = (EditText) super.findViewById(R.id.descriptionEditText);
+        nameEditText = (EditText) super.findViewById(R.id.projectNameEditText);
+        picturesTableLayout = (LinearLayout) super.findViewById(R.id.pictureLinearLayout);
+        imageViewContainerList = new ArrayList<ImageViewContainer>();
+        projectDAO = new ProjectDAO(getBaseContext());
+
     }
 
     @Override
@@ -91,6 +107,37 @@ public class EditProjectActivity extends Activity {
             }
         };
         btnAddPhoto.setOnClickListener(listener);
+
+
+        Button btnSave = (Button) super.findViewById(R.id.saveBtn);
+        View.OnClickListener listenerBtnSave = new View.OnClickListener() {
+            @Override
+            public void onClick(View v){
+                insertIntoDatabase();
+
+            }
+        };
+        btnSave.setOnClickListener(listenerBtnSave);
+    }
+
+    private void insertIntoDatabase(){
+
+        Project project = new Project();
+        project.setCreationDate(new Date());
+        project.setDescription(descriptionEditText.getText().toString());
+        project.setName(nameEditText.getText().toString());
+        project.setOwner("Carlos");
+        projectDAO.addProject(project);
+
+        for(ImageViewContainer imageViewContainer : imageViewContainerList){
+            Image image = new Image();
+            image.setDescription(imageViewContainer.getEditText().getText().toString());
+            image.setCreationDate(new Date());
+            image.setImage(imageViewContainer.getImageName());
+            image.setProjectId(project.getId());
+            projectDAO.addImage(image);
+        }
+        Log.i("LEE",""+projectDAO.getNextId());
     }
 
     @Override
@@ -105,20 +152,27 @@ public class EditProjectActivity extends Activity {
                 //String curPath = fileUri.getPath();
                 //Bitmap bitmap = BitmapFactory.decodeFile(curPath);
                 try {
+
                     Bitmap thumbnail = MediaStore.Images.Media.getBitmap(getContentResolver(), fileUri);
+                    ImageViewContainer imageViewContainer = new ImageViewContainer();
                     ImageView iv = new ImageView(this);
                     iv.setImageBitmap(thumbnail);
                     iv.setAdjustViewBounds(true);
                     iv.setMaxHeight(400);
                     iv.setMaxWidth(400);
 
+
                     EditText et = new EditText(this);
                     et.setHint("Add pictures comments here");
 
-                    LinearLayout picturesTableLayout = (LinearLayout) super.findViewById(R.id.pictureLinearLayout);
-
                     picturesTableLayout.addView(iv, numberOfPictures++);
-                    picturesTableLayout.addView(et,numberOfPictures++);
+                    picturesTableLayout.addView(et, numberOfPictures++);
+
+                    imageViewContainer.setEditText(et);
+                    imageViewContainer.setImageView(iv);
+                    imageViewContainer.setImageName(fileUri.getLastPathSegment());
+                    imageViewContainerList.add(imageViewContainer);
+
                 } catch (Exception e){
                     e.printStackTrace();
                 }
@@ -163,5 +217,49 @@ public class EditProjectActivity extends Activity {
         }
 
         return mediaFile;
+    }
+
+    private class ImageViewContainer{
+        private EditText editText;
+        private ImageView imageView;
+        private String imageName = "";
+
+        public ImageViewContainer(){
+
+        }
+
+        public ImageViewContainer(EditText editText, ImageView imageView){
+            this.editText = editText;
+            this.imageView = imageView;
+        }
+
+
+        public String getImageName() {
+            return imageName;
+        }
+
+        public void setImageName(String imageName) {
+            this.imageName = imageName;
+        }
+
+        public EditText getEditText() {
+            return editText;
+        }
+
+        public void setEditText(EditText editText) {
+            this.editText = editText;
+        }
+
+        public ImageView getImageView() {
+            return imageView;
+        }
+
+        public void setImageView(ImageView imageView) {
+            this.imageView = imageView;
+        }
+
+
+
+
     }
 }

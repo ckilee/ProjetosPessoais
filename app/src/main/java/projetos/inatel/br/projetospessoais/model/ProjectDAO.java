@@ -2,7 +2,10 @@ package projetos.inatel.br.projetospessoais.model;
 
 import android.content.ContentValues;
 import android.content.Context;
+import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
+import android.database.sqlite.SQLiteQueryBuilder;
+import android.provider.BaseColumns;
 import android.util.Log;
 
 /**
@@ -26,7 +29,7 @@ public class ProjectDAO extends ProjectDBHelper{
 
 
         // faz o insert
-        db.insert(ProjectContract.PROJECT_TABLE, null, values);
+        project.setId((int)db.insert(ProjectContract.PROJECT_TABLE, null, values));
         db.close();
     }
 
@@ -44,5 +47,17 @@ public class ProjectDAO extends ProjectDBHelper{
         // faz o insert
         db.insert(ProjectContract.IMAGE_TABLE, null, values);
         db.close();
+    }
+
+    public int getNextId(){
+        SQLiteDatabase db = this.getReadableDatabase();
+        Cursor cursor = db.query(ProjectContract.PROJECT_TABLE, new String[]{
+                BaseColumns._ID}, null, null, null, null, null);
+        if(cursor==null){
+            return 0;
+        }
+        int numberOfIds = cursor.getCount();
+        return numberOfIds;
+
     }
 }
