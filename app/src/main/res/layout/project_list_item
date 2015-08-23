@@ -1,0 +1,74 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="fill_parent"
+    android:layout_height="wrap_content"
+    android:background="@drawable/custom_border"
+    android:orientation="horizontal"
+    android:padding="3dip" >
+
+    <!-- Imagem -->
+
+    <ImageView
+        android:id="@+id/item_image"
+        android:layout_width="@dimen/item_image_width"
+        android:layout_height="@dimen/item_image_height"
+        android:layout_alignParentLeft="true"
+        android:contentDescription="Imagem do item"
+        android:padding="3dip"
+        android:src="@mipmap/ic_launcher" />
+
+    <!-- Synced icom -->
+    <ImageView
+        android:id="@+id/item_imageSync"
+        android:layout_width="20dp"
+        android:layout_height="20dp"
+        android:layout_below="@+id/item_date"
+        android:layout_alignParentRight="true"
+        android:contentDescription="Sincronizado?"/>
+
+    <!-- Categoria -->
+
+    <TextView
+        android:id="@+id/item_name"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignTop="@+id/item_image"
+        android:layout_toRightOf="@+id/item_image"
+        android:text="Name"
+        android:textSize="15dip"
+        android:textStyle="bold" />
+
+    <!-- Valor -->
+
+    <TextView
+        android:id="@+id/item_description"
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/item_name"
+        android:layout_toRightOf="@+id/item_image"
+        android:text="Description"
+        android:textStyle="bold" />
+
+    <!-- Anunciante -->
+
+    <TextView
+        android:id="@+id/item_owner"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentRight="true"
+        android:layout_alignParentTop="true"
+        android:text="Owner" />
+
+    <!-- Criado em -->
+
+    <TextView
+        android:id="@+id/item_date"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentRight="true"
+        android:layout_below="@+id/item_owner"
+        android:layout_marginRight="5dip"
+        android:text="Date"
+        android:textStyle="bold" />
+
+</RelativeLayout>
