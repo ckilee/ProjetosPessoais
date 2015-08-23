@@ -1,6 +1,7 @@
 package projetos.inatel.br.projetospessoais;
 
 import android.app.Activity;
+import android.content.Intent;
 import android.database.sqlite.SQLiteDatabase;
 import android.os.Bundle;
 import android.view.Menu;
@@ -17,6 +18,10 @@ public class MainActivity extends Activity {
         setContentView(R.layout.activity_main);
         ProjectDAO projectDAO = new ProjectDAO(getApplicationContext());
         SQLiteDatabase db = projectDAO.getWritableDatabase();
+        Intent intent = new Intent(this,EditProjectActivity.class);
+        startActivity(intent);
+
+
     }
 
     @Override
