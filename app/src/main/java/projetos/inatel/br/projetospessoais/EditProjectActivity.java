@@ -6,6 +6,7 @@ import android.content.Intent;
 import android.database.sqlite.SQLiteDatabase;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
+import android.media.ThumbnailUtils;
 import android.net.Uri;
 import android.os.Bundle;
 import android.os.Environment;
@@ -153,13 +154,13 @@ public class EditProjectActivity extends Activity {
                 //Bitmap bitmap = BitmapFactory.decodeFile(curPath);
                 try {
 
-                    Bitmap thumbnail = MediaStore.Images.Media.getBitmap(getContentResolver(), fileUri);
+                    Bitmap thumbnail = ThumbnailUtils.extractThumbnail(MediaStore.Images.Media.getBitmap(getContentResolver(), fileUri),300,300);
                     ImageViewContainer imageViewContainer = new ImageViewContainer();
                     ImageView iv = new ImageView(this);
                     iv.setImageBitmap(thumbnail);
                     iv.setAdjustViewBounds(true);
                     iv.setMaxHeight(400);
-                    iv.setMaxWidth(400);
+                    iv.setMaxWidth(500);
 
 
                     EditText et = new EditText(this);
