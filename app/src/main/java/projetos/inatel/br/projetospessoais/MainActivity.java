@@ -5,9 +5,15 @@ import android.content.Intent;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.os.Bundle;
+import android.provider.MediaStore;
+import android.text.format.DateUtils;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.view.View;
+import android.widget.Button;
 import android.widget.ListView;
+import android.widget.SimpleCursorAdapter;
+import android.widget.TextView;
 
 import projetos.inatel.br.projetospessoais.model.ProjectCursorAdapter;
 import projetos.inatel.br.projetospessoais.model.ProjectDAO;
@@ -26,6 +32,7 @@ public class MainActivity extends Activity {
         Intent intent = new Intent(this,EditProjectActivity.class);
         startActivity(intent);*/
 
+        configureButtons();
         configureListView();
 
 
@@ -37,7 +44,7 @@ public class MainActivity extends Activity {
         novoAdapter = new ProjectCursorAdapter(this, cursor);
 
         // configura o ViewBinder do adaptador do ListView
-        //novoAdapter.setViewBinder(new AnuncioViewBinder());
+        novoAdapter.setViewBinder(new ProjectViewBinder());
         lstProject.setAdapter(novoAdapter);
     }
 
@@ -61,5 +68,37 @@ public class MainActivity extends Activity {
         }
 
         return super.onOptionsItemSelected(item);
+    }
+
+    class ProjectViewBinder implements SimpleCursorAdapter.ViewBinder {
+
+        @Override
+        public boolean setViewValue(View view, Cursor cursor, int columnIndex) {
+            switch (view.getId()) {
+                case R.id.item_date:
+                    long timestamp = cursor.getLong(columnIndex);
+                    CharSequence data = DateUtils.getRelativeTimeSpanString(timestamp);
+                    ((TextView) view).setText(data);
+                    return true;
+            }
+            return false;
+        }
+
+    }
+
+    private void configureButtons() {
+        Button btnAddProject = (Button) super.findViewById(R.id.btn_add_project);
+        View.OnClickListener listener = new View.OnClickListener() {
+            @Override
+            public void onClick(View v){
+                startEditProjectActivity();
+            }
+        };
+        btnAddProject.setOnClickListener(listener);
+    }
+
+    private void startEditProjectActivity(){
+        Intent intent = new Intent(this,EditProjectActivity.class);
+        startActivity(intent);
     }
 }

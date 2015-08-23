@@ -55,13 +55,13 @@ public class EditProjectActivity extends Activity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_edit_project);
-        configureButtons();
+
         descriptionEditText = (EditText) super.findViewById(R.id.descriptionEditText);
         nameEditText = (EditText) super.findViewById(R.id.projectNameEditText);
         picturesTableLayout = (LinearLayout) super.findViewById(R.id.pictureLinearLayout);
         imageViewContainerList = new ArrayList<ImageViewContainer>();
         projectDAO = new ProjectDAO(getBaseContext());
-
+        configureButtons();
     }
 
     @Override
@@ -115,6 +115,7 @@ public class EditProjectActivity extends Activity {
             @Override
             public void onClick(View v){
                 insertIntoDatabase();
+                finish();
 
             }
         };
