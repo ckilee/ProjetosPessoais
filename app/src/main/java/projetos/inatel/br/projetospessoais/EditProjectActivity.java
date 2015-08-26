@@ -139,7 +139,6 @@ public class EditProjectActivity extends Activity {
             image.setProjectId(project.getId());
             projectDAO.addImage(image);
         }
-        Log.i("LEE",""+projectDAO.getNextId());
     }
 
     @Override
@@ -163,6 +162,14 @@ public class EditProjectActivity extends Activity {
                     iv.setMaxHeight(400);
                     iv.setMaxWidth(500);
 
+                    FileOutputStream out = new FileOutputStream(fileUri.getPath().replace(".jpg",".png"));
+                    thumbnail.compress(Bitmap.CompressFormat.PNG, 100, out);
+                    out.flush();
+                    out.close();
+
+                    File curFile = new File(fileUri.getPath());
+                    curFile.delete();
+
 
                     EditText et = new EditText(this);
                     et.setHint("Add pictures comments here");
@@ -172,7 +179,7 @@ public class EditProjectActivity extends Activity {
 
                     imageViewContainer.setEditText(et);
                     imageViewContainer.setImageView(iv);
-                    imageViewContainer.setImageName(fileUri.getLastPathSegment());
+                    imageViewContainer.setImageName(fileUri.getLastPathSegment().replace(".jpg",".png"));
                     imageViewContainerList.add(imageViewContainer);
 
                 } catch (Exception e){
