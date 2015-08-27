@@ -22,6 +22,8 @@ public class ProjectDAO extends ProjectDBHelper{
         SQLiteDatabase db = this.getWritableDatabase();
         // Cria o ContentValues para adicionar: "column"/value
         ContentValues values = new ContentValues();
+        if(project.getId()>-1)
+            values.put(ProjectContract.Column.ID, project.getId());
         values.put(ProjectContract.Column.NAME, project.getName());
         values.put(ProjectContract.Column.DESCRIPTION, project.getDescription());
         values.put(ProjectContract.Column.OWNER, project.getOwner());
@@ -66,6 +68,15 @@ public class ProjectDAO extends ProjectDBHelper{
 
         SQLiteDatabase db = this.getReadableDatabase();
         Cursor cursor = db.query(ProjectContract.PROJECT_TABLE, ProjectContract.PROJECT_COLUMN_NAMES, null, null, null, null,
+                null);
+        return cursor;
+    }
+
+    //get all images by project id
+    public Cursor getAllImageAsCursor(String id) {
+
+        SQLiteDatabase db = this.getReadableDatabase();
+        Cursor cursor = db.query(ProjectContract.IMAGE_TABLE, ProjectContract.IMAGE_COLUMN_NAMES, ProjectContract.Column.PROJECT_FOREIGN_ID+"=?", new String[]{id}, null, null,
                 null);
         return cursor;
     }

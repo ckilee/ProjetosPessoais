@@ -6,7 +6,7 @@ import java.util.Date;
  * Created by ckilee on 16/08/15.
  */
 public class Project {
-    private int id;
+    private int id = -1;
     private String name = "";
     private String description = "";
     private String owner = "";
