@@ -3,12 +3,20 @@ package projetos.inatel.br.projetospessoais.model;
 import android.content.Context;
 import android.database.Cursor;
 import android.graphics.Bitmap;
+import android.media.ThumbnailUtils;
+import android.net.Uri;
+import android.os.Environment;
+import android.provider.MediaStore;
 import android.util.Log;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.SimpleCursorAdapter;
 
+import java.io.File;
+import java.io.IOException;
+
+import projetos.inatel.br.projetospessoais.MainActivity;
 import projetos.inatel.br.projetospessoais.R;
 
 /**
@@ -28,12 +36,13 @@ public class ProjectCursorAdapter extends SimpleCursorAdapter{
 
     private Cursor cursor;
     //private ImageRetriever ir;
-    private int idCloudIndex;
-    private int imageFileIndex;
+    private int idColumn;
+
 
     public ProjectCursorAdapter(Context context, Cursor c) {
         super(context, R.layout.project_list_item, c, fromProject, toProject, 0);
         this.cursor = c;
+        idColumn = cursor.getColumnIndex(ProjectContract.Column.ID);
         /*
         ir = new ImageRetriever(context, ImageRetriever.CacheType.SMALL);
         idCloudIndex = cursor.getColumnIndex(AnuncioContract.Column.ID_CLOUD);
@@ -51,9 +60,27 @@ public class ProjectCursorAdapter extends SimpleCursorAdapter{
         if (cursor.isClosed()) {
             return view;
         }
-        /*
+        ProjectDAO projectDAO = MainActivity.getInstance().getProjectDAO();
         ImageView imageView = (ImageView) view.findViewById(R.id.item_image);
-        Integer idCloud = cursor.getInt(idCloudIndex);
+        int projectId = cursor.getInt(idColumn);
+        int imageFileNameColumnIndex = 0;
+        Cursor allImagesCursor = projectDAO.getAllImageAsCursor(Integer.toString(projectId));
+        if(allImagesCursor!=null){
+            imageFileNameColumnIndex = allImagesCursor.getColumnIndex(ProjectContract.Column.IMAGE);
+            allImagesCursor.moveToFirst();
+            String fileName = allImagesCursor.getString(imageFileNameColumnIndex);
+            File mediaStorageDir = new File(Environment.getExternalStoragePublicDirectory(
+                    Environment.DIRECTORY_PICTURES), "MyCameraApp"+File.separator+fileName);
+            Uri fileUri = Uri.fromFile(mediaStorageDir);
+            try {
+                Bitmap thumbnail = ThumbnailUtils.extractThumbnail(MediaStore.Images.Media.getBitmap(MainActivity.getInstance().getContentResolver(), fileUri), 300, 300);
+                if(thumbnail!=null)
+                    imageView.setImageBitmap(thumbnail);
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+        }
+        /*Integer idCloud = cursor.getInt(idCloudIndex);
         String imagePath = cursor.getString(imageFileIndex);
         Log.d(TAG, "getView " + position + " idCloud: " + idCloud + " imagePath: " +
                 imagePath);
