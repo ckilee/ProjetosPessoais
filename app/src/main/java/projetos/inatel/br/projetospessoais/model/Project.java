@@ -10,7 +10,7 @@ public class Project {
     private String name = "";
     private String description = "";
     private String owner = "";
-    private Date creationDate;
+    private String creationDate;
 
     public Project(){
 
@@ -48,11 +48,11 @@ public class Project {
         this.owner = owner;
     }
 
-    public Date getCreationDate() {
+    public String getCreationDate() {
         return creationDate;
     }
 
-    public void setCreationDate(Date creationDate) {
+    public void setCreationDate(String creationDate) {
         this.creationDate = creationDate;
     }
 

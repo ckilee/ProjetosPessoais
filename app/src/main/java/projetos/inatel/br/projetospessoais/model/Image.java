@@ -10,7 +10,7 @@ public class Image {
     private int projectId;
     private String image;
     private String description;
-    private Date creationDate;
+    private String creationDate;
 
     public int getId() {
         return id;
@@ -44,11 +44,11 @@ public class Image {
         this.description = description;
     }
 
-    public Date getCreationDate() {
+    public String getCreationDate() {
         return creationDate;
     }
 
-    public void setCreationDate(Date creationDate) {
+    public void setCreationDate(String creationDate) {
         this.creationDate = creationDate;
     }
 }

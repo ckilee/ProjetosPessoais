@@ -1,12 +1,17 @@
 package projetos.inatel.br.projetospessoais;
 
 import android.app.Activity;
+import android.content.ComponentName;
 import android.content.ContentResolver;
+import android.content.Context;
 import android.content.Intent;
+import android.content.pm.PackageManager;
+import android.content.pm.ResolveInfo;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.os.AsyncTask;
 import android.os.Bundle;
+import android.os.Environment;
 import android.provider.MediaStore;
 import android.text.format.DateUtils;
 import android.util.Log;
@@ -18,6 +23,10 @@ import android.widget.ListView;
 import android.widget.SimpleCursorAdapter;
 import android.widget.TextView;
 import android.widget.Toast;
+
+import com.google.gson.Gson;
+import com.google.gson.GsonBuilder;
+import com.google.gson.reflect.TypeToken;
 
 import org.apache.http.HttpResponse;
 import org.apache.http.NameValuePair;
@@ -33,7 +42,11 @@ import org.apache.http.message.BasicNameValuePair;
 import java.io.DataOutputStream;
 import java.io.File;
 import java.io.FileInputStream;
+import java.io.FileOutputStream;
 import java.io.IOException;
+import java.io.InputStream;
+import java.io.OutputStream;
+import java.lang.reflect.Type;
 import java.net.HttpURLConnection;
 import java.net.MalformedURLException;
 import java.net.URL;
@@ -41,6 +54,8 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
+import projetos.inatel.br.projetospessoais.model.Image;
+import projetos.inatel.br.projetospessoais.model.Project;
 import projetos.inatel.br.projetospessoais.model.ProjectCursorAdapter;
 import projetos.inatel.br.projetospessoais.model.ProjectDAO;
 
@@ -134,7 +149,12 @@ public class MainActivity extends Activity {
         View.OnClickListener listenerRefresh = new View.OnClickListener() {
             @Override
             public void onClick(View v){
-                refreshWithWebService();
+                new GetFromWeb().execute();
+
+                //refreshWithWebService();
+                //Intent intent = getIntent();
+                //finish();
+                //startActivity(intent);
             }
         };
         btnRefresh.setOnClickListener(listenerRefresh);
@@ -153,33 +173,101 @@ public class MainActivity extends Activity {
         return projectDAO;
     }
 
-
-
-    private class SendToWeb extends AsyncTask<String, Void, String> {
+    private class GetFromWeb extends AsyncTask<String, Void, String>{
         private String curProjectId = "";
-
         @Override
         protected String doInBackground(String... params) {
+            /*
             // Create a new HttpClient and Post Header
+            String httpResponse = "";
             HttpClient httpclient = new DefaultHttpClient();
             HttpGet httpget = new HttpGet("http://ckilee.esy.es/project");
-
+            HttpResponse response = null;
             try {
-                // Execute HTTP Post Request
-                HttpResponse response = httpclient.execute(httpget);
+                response = httpclient.execute(httpget);
 
-                curProjectId = new BasicResponseHandler().handleResponse(response);
+                httpResponse = new BasicResponseHandler().handleResponse(response);
+            }
+            catch (IOException e) {
+                e.printStackTrace();
+            }*/
 
-            } catch (ClientProtocolException e) {
-                // TODO Auto-generated catch block
-            } catch (IOException e) {
-                // TODO Auto-generated catch block
+            String projectJson = "";
+            projectJson = getJson("http://ckilee.esy.es/project");
+            Gson gson = new GsonBuilder().create();
+            Type listTypeProject = new TypeToken<ArrayList<Project>>() {
+            }.getType();
+            List<Project> projectList = gson.fromJson(projectJson, listTypeProject);
+
+            for(Project curProject : projectList){
+                if(!projectDAO.addProjectIfNotExist(curProject))
+                    continue;
+
+                String imageJson = getJson("http://ckilee.esy.es/image/"+curProject.getId());
+                Type listTypeImage = new TypeToken<ArrayList<Image>>() {}.getType();
+                List<Image> imageList = gson.fromJson(imageJson, listTypeImage);
+                for(Image curimage : imageList){
+                    Log.i("MainActivity","Adding one more image into database:"+curimage.toString());
+                    if(projectDAO.addImageIfNotExist(curimage)){
+                        saveImageLocally(curimage);
+                    }
+                }
             }
 
-
-            curProjectId = curProjectId.replace("\"", "");
             return curProjectId;
         }
+
+        private void saveImageLocally(Image image) {
+            String imageUrl = "http://ckilee.esy.es/uploads/"+image.getImage();
+
+            String destinationFile = Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_PICTURES)+File.separator+ "MyCameraApp"+File.separator+image.getImage();
+            URL url = null;
+
+            try {
+                url = new URL(imageUrl);
+
+                InputStream is = url.openStream();
+                OutputStream os = new FileOutputStream(destinationFile);
+                byte[] b = new byte[2048];
+                int length;
+
+                while ((length = is.read(b)) != -1) {
+                    os.write(b, 0, length);
+                }
+
+                is.close();
+                os.close();
+            }
+            catch (Exception e) {
+                e.printStackTrace();
+            }
+        }
+
+        @Override
+        protected void onPostExecute(String projectId) {
+            //insertIntoDatabase(projectId);
+            Toast.makeText(MainActivity.this, "Download of projects has been concluded.",
+                    Toast.LENGTH_SHORT).show();
+        }
+
+        private String getJson(String url){
+            // Create a new HttpClient and Post Header
+            String httpResponse = "";
+            HttpClient httpclient = new DefaultHttpClient();
+            HttpGet httpget = new HttpGet(url);
+            HttpResponse response = null;
+            try {
+                response = httpclient.execute(httpget);
+
+                httpResponse = new BasicResponseHandler().handleResponse(response);
+            }
+            catch (IOException e) {
+                e.printStackTrace();
+            }
+            return httpResponse;
+        }
+
     }
+
 
 }

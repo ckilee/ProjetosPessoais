@@ -169,7 +169,7 @@ public class EditProjectActivity extends Activity {
     private void insertIntoDatabase(String projectId){
         int projectIdInteger = Integer.parseInt(projectId);
         Project project = new Project();
-        project.setCreationDate(new Date());
+        project.setCreationDate(Long.toString(new Date().getTime()));
         project.setDescription(descriptionEditText.getText().toString());
         project.setName(nameEditText.getText().toString());
         project.setOwner("Carlos");
@@ -179,7 +179,7 @@ public class EditProjectActivity extends Activity {
         for(ImageViewContainer imageViewContainer : imageViewContainerList){
             Image image = new Image();
             image.setDescription(imageViewContainer.getEditText().getText().toString());
-            image.setCreationDate(new Date());
+            image.setCreationDate(Long.toString(new Date().getTime()));
             image.setImage(imageViewContainer.getImageName());
             image.setProjectId(projectIdInteger);
             projectDAO.addImage(image);
@@ -337,13 +337,14 @@ public class EditProjectActivity extends Activity {
                 nameValuePairs.add(new BasicNameValuePair("name",nameEditText.getText().toString() ));
                 nameValuePairs.add(new BasicNameValuePair("description", descriptionEditText.getText().toString()));
                 nameValuePairs.add(new BasicNameValuePair("owner", "Carlos"));
-                nameValuePairs.add(new BasicNameValuePair("creation_date", new Date().toString()));
+                nameValuePairs.add(new BasicNameValuePair("creationDate", Long.toString(new Date().getTime())));
                 httppost.setEntity(new UrlEncodedFormEntity(nameValuePairs));
 
                 // Execute HTTP Post Request
                 HttpResponse response = httpclient.execute(httppost);
 
                 curProjectId = new BasicResponseHandler().handleResponse(response);
+                curProjectId = curProjectId.replace("\"","");
 
             } catch (ClientProtocolException e) {
                 // TODO Auto-generated catch block
@@ -358,9 +359,9 @@ public class EditProjectActivity extends Activity {
                 try {
                     // Add your data
                     List<NameValuePair> nameValuePairs = new ArrayList<NameValuePair>(2);
-                    nameValuePairs.add(new BasicNameValuePair("projetos_id", curProjectId));
+                    nameValuePairs.add(new BasicNameValuePair("projectId", curProjectId));
                     nameValuePairs.add(new BasicNameValuePair("image", imageViewContainer.getImageName()));
-                    nameValuePairs.add(new BasicNameValuePair("creation_date", new Date().toString()));
+                    nameValuePairs.add(new BasicNameValuePair("creationDate", Long.toString(new Date().getTime())));
                     nameValuePairs.add(new BasicNameValuePair("description", imageViewContainer.getEditText().getText().toString()));
                     httppost.setEntity(new UrlEncodedFormEntity(nameValuePairs));
 
@@ -375,7 +376,7 @@ public class EditProjectActivity extends Activity {
 
                 uploadFile(imageViewContainer.getCompletePath());
             }
-            curProjectId = curProjectId.replace("\"","");
+
             return curProjectId;
         }
 

@@ -8,6 +8,8 @@ import android.database.sqlite.SQLiteQueryBuilder;
 import android.provider.BaseColumns;
 import android.util.Log;
 
+import java.util.Date;
+
 /**
  * Created by ckilee on 16/08/15.
  */
@@ -27,12 +29,23 @@ public class ProjectDAO extends ProjectDBHelper{
         values.put(ProjectContract.Column.NAME, project.getName());
         values.put(ProjectContract.Column.DESCRIPTION, project.getDescription());
         values.put(ProjectContract.Column.OWNER, project.getOwner());
-        values.put(ProjectContract.Column.CREATION_DATE, project.getCreationDate().getTime());
+        values.put(ProjectContract.Column.CREATION_DATE, project.getCreationDate());
 
 
         // faz o insert
         project.setId((int) db.insert(ProjectContract.PROJECT_TABLE, null, values));
         db.close();
+    }
+
+    public boolean addProjectIfNotExist(Project project){
+        Log.d(TAG, "addProjectIfNotExist " + project.toString());
+        SQLiteDatabase db = this.getWritableDatabase();
+        Cursor cursor = db.query(ProjectContract.PROJECT_TABLE, new String[]{ProjectContract.Column.ID},ProjectContract.Column.ID+"=?",new String[]{Integer.toString(project.getId())},null,null,null );
+        if(cursor.getCount()<=0){
+            addProject(project);
+            return true;
+        }
+        return false;
     }
 
     public void addImage(Image image) {
@@ -43,12 +56,23 @@ public class ProjectDAO extends ProjectDBHelper{
         values.put(ProjectContract.Column.PROJECT_FOREIGN_ID, image.getProjectId());
         values.put(ProjectContract.Column.IMAGE, image.getImage());
         values.put(ProjectContract.Column.DESCRIPTION, image.getDescription());
-        values.put(ProjectContract.Column.CREATION_DATE, image.getCreationDate().getTime());
+        values.put(ProjectContract.Column.CREATION_DATE, image.getCreationDate());
 
 
         // faz o insert
         db.insert(ProjectContract.IMAGE_TABLE, null, values);
         db.close();
+    }
+
+    public boolean addImageIfNotExist(Image image){
+        Log.d(TAG, "addImageIfNotExist " + image.toString());
+        SQLiteDatabase db = this.getWritableDatabase();
+        Cursor cursor = db.query(ProjectContract.IMAGE_TABLE, new String[]{ProjectContract.Column.ID},ProjectContract.Column.PROJECT_FOREIGN_ID+"=?",new String[]{Integer.toString(image.getProjectId())},null,null,null );
+        if(cursor.getCount()<=0){
+            addImage(image);
+            return true;
+        }
+        return false;
     }
 
     public int getNextId(){

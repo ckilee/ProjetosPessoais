@@ -65,7 +65,7 @@ public class ProjectCursorAdapter extends SimpleCursorAdapter{
         int projectId = cursor.getInt(idColumn);
         int imageFileNameColumnIndex = 0;
         Cursor allImagesCursor = projectDAO.getAllImageAsCursor(Integer.toString(projectId));
-        if(allImagesCursor!=null){
+        if(allImagesCursor!=null && allImagesCursor.getCount()>0){
             imageFileNameColumnIndex = allImagesCursor.getColumnIndex(ProjectContract.Column.IMAGE);
             allImagesCursor.moveToFirst();
             String fileName = allImagesCursor.getString(imageFileNameColumnIndex);
