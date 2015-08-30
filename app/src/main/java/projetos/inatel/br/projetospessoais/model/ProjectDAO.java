@@ -104,4 +104,18 @@ public class ProjectDAO extends ProjectDBHelper{
                 null);
         return cursor;
     }
+
+    public Project getProject(int id){
+        SQLiteDatabase db = this.getReadableDatabase();
+        Cursor cursor = db.query(ProjectContract.PROJECT_TABLE, ProjectContract.PROJECT_COLUMN_NAMES, ProjectContract.Column.ID+"=?", new String[]{Integer.toString(id)}, null, null,
+                null);
+        cursor.moveToFirst();
+        Project project = new Project();
+        project.setId(id);
+        project.setOwner(cursor.getString(cursor.getColumnIndex(ProjectContract.Column.OWNER)));
+        project.setName(cursor.getString(cursor.getColumnIndex(ProjectContract.Column.NAME)));
+        project.setDescription(cursor.getString(cursor.getColumnIndex(ProjectContract.Column.DESCRIPTION)));
+        project.setCreationDate(cursor.getString(cursor.getColumnIndex(ProjectContract.Column.CREATION_DATE)));
+        return project;
+    }
 }

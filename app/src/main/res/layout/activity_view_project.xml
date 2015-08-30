@@ -1,0 +1,55 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:textAppearance="?android:attr/textAppearanceMedium"
+        android:text="Project Name:"
+        android:id="@+id/project_name_label_view" />
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:textAppearance="?android:attr/textAppearanceMedium"
+        android:id="@+id/project_name_view"
+        android:layout_alignParentStart="true"
+        android:layout_below="@+id/project_name_label_view" />
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:textAppearance="?android:attr/textAppearanceMedium"
+        android:text="Description:"
+        android:id="@+id/project_description_label"
+        android:layout_below="@+id/project_name_label_view"
+        android:layout_alignParentStart="true"
+        android:layout_marginTop="43dp" />
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:id="@+id/description_tv"
+        android:layout_below="@+id/project_description_label"
+        android:layout_alignParentStart="true" />
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:textAppearance="?android:attr/textAppearanceMedium"
+        android:text="Images and Details:"
+        android:id="@+id/images_label"
+        android:layout_below="@+id/description_tv"
+        android:layout_toEndOf="@+id/description_tv"
+        android:layout_marginTop="52dp" />
+
+    <ListView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:id="@+id/imagesListView"
+        android:layout_below="@+id/images_label"
+        android:layout_toEndOf="@+id/description_tv" />
+
+</RelativeLayout>

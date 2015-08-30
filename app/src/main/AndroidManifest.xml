@@ -42,6 +42,11 @@
             android:enabled="true"
             android:exported="true" >
         </service>
+
+        <activity
+            android:name=".ViewProject"
+            android:label="@string/title_activity_view_project" >
+        </activity>
     </application>
 
 </manifest>

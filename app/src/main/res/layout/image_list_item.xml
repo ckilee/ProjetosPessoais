@@ -1,0 +1,40 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="fill_parent"
+    android:layout_height="wrap_content"
+    android:background="@drawable/custom_border"
+    android:orientation="horizontal"
+    android:padding="10dip" >
+
+    <!-- Imagem -->
+
+    <ImageView
+        android:id="@+id/item_image"
+        android:layout_width="@dimen/item_image_width"
+        android:layout_height="@dimen/item_image_height"
+        android:layout_alignParentStart="true"
+        android:contentDescription="Imagem do item"
+        android:padding="3dip"
+        android:src="@mipmap/ic_launcher" />
+
+    <!-- Synced icom -->
+
+    <!-- Categoria -->
+
+    <!-- Valor -->
+
+    <TextView
+        android:id="@+id/item_description"
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:text="Description"
+        android:textStyle="bold"
+        android:layout_centerVertical="true"
+        android:layout_toEndOf="@+id/item_image"
+        android:layout_marginStart="50dp" />
+
+    <!-- Anunciante -->
+
+    <!-- Criado em -->
+
+</RelativeLayout>

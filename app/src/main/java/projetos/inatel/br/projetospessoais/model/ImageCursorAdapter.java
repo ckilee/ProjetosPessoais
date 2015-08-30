@@ -1,5 +1,6 @@
 package projetos.inatel.br.projetospessoais.model;
 
+
 import android.content.Context;
 import android.content.Intent;
 import android.database.Cursor;
@@ -21,33 +22,28 @@ import java.io.IOException;
 import projetos.inatel.br.projetospessoais.EditProjectActivity;
 import projetos.inatel.br.projetospessoais.MainActivity;
 import projetos.inatel.br.projetospessoais.R;
-import projetos.inatel.br.projetospessoais.ViewProject;
 
 /**
  * Created by ckilee on 23/08/15.
  */
-public class ProjectCursorAdapter extends SimpleCursorAdapter{
+public class ImageCursorAdapter extends SimpleCursorAdapter{
     private int projectId = -1 ;
-    public static final String TAG = ProjectCursorAdapter.class.getSimpleName();
+    public static final String TAG = ImageCursorAdapter.class.getSimpleName();
     // Campos do banco
-    private static String[] fromProject = new String[]{ProjectContract.Column.NAME,
-            ProjectContract.Column.DESCRIPTION, ProjectContract.Column.OWNER,
-            ProjectContract.Column.CREATION_DATE};
+    private static String[] fromProject = new String[]{ProjectContract.Column.DESCRIPTION};
 
     // Campos da UI
-    private static int[] toProject = new int[]{R.id.item_name, R.id.item_description
-            , R.id.item_owner,
-            R.id.item_date};
+    private static int[] toProject = new int[]{R.id.item_description};
 
     private Cursor cursor;
     //private ImageRetriever ir;
-    private int idColumn;
+    private int imageColumn;
 
 
-    public ProjectCursorAdapter(Context context, Cursor c) {
-        super(context, R.layout.project_list_item, c, fromProject, toProject, 0);
+    public ImageCursorAdapter(Context context, Cursor c) {
+        super(context, R.layout.image_list_item, c, fromProject, toProject, 0);
         this.cursor = c;
-        idColumn = cursor.getColumnIndex(ProjectContract.Column.ID);
+        imageColumn = cursor.getColumnIndex(ProjectContract.Column.IMAGE);
         /*
         ir = new ImageRetriever(context, ImageRetriever.CacheType.SMALL);
         idCloudIndex = cursor.getColumnIndex(AnuncioContract.Column.ID_CLOUD);
@@ -67,24 +63,19 @@ public class ProjectCursorAdapter extends SimpleCursorAdapter{
         }
         ProjectDAO projectDAO = MainActivity.getInstance().getProjectDAO();
         ImageView imageView = (ImageView) view.findViewById(R.id.item_image);
-        projectId = cursor.getInt(idColumn);
-        int imageFileNameColumnIndex = 0;
-        Cursor allImagesCursor = projectDAO.getAllImageAsCursor(Integer.toString(projectId));
-        if(allImagesCursor!=null && allImagesCursor.getCount()>0){
-            imageFileNameColumnIndex = allImagesCursor.getColumnIndex(ProjectContract.Column.IMAGE);
-            allImagesCursor.moveToFirst();
-            String fileName = allImagesCursor.getString(imageFileNameColumnIndex);
+        String fileName = cursor.getString(imageColumn);
+
             File mediaStorageDir = new File(Environment.getExternalStoragePublicDirectory(
                     Environment.DIRECTORY_PICTURES), "MyCameraApp"+File.separator+fileName);
             Uri fileUri = Uri.fromFile(mediaStorageDir);
             try {
-                Bitmap thumbnail = ThumbnailUtils.extractThumbnail(MediaStore.Images.Media.getBitmap(MainActivity.getInstance().getContentResolver(), fileUri), 300, 300);
+                Bitmap thumbnail = ThumbnailUtils.extractThumbnail(MediaStore.Images.Media.getBitmap(MainActivity.getInstance().getContentResolver(), fileUri), 500, 500);
                 if(thumbnail!=null)
                     imageView.setImageBitmap(thumbnail);
             } catch (IOException e) {
                 e.printStackTrace();
             }
-        }
+
         /*Integer idCloud = cursor.getInt(idCloudIndex);
         String imagePath = cursor.getString(imageFileIndex);
         Log.d(TAG, "getView " + position + " idCloud: " + idCloud + " imagePath: " +
@@ -95,19 +86,7 @@ public class ProjectCursorAdapter extends SimpleCursorAdapter{
         if (bitmap != null) {
             imageView.setImageBitmap(bitmap);
         }*/
-        View.OnTouchListener backListener=new View.OnTouchListener(){
-            public boolean onTouch(    View v,    MotionEvent event){
-                if (event.getAction() == MotionEvent.ACTION_UP) {
-                    Intent intent = new Intent(MainActivity.getInstance(), ViewProject.class);
-                    intent.putExtra("projectId",projectId);
-                    MainActivity.getInstance().startActivity(intent);
-                    return false;
-                }
-                return true;
-            }
-        };
 
-        view.setOnTouchListener(backListener);
         return view;
     }
 }

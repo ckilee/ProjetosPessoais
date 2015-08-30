@@ -11,5 +11,6 @@
     <string name="take_phone_btn">Add Photo</string>
     <string name="save_btn">Save</string>
     <string name="slide_show_btn">Slide Show</string>
+    <string name="title_activity_view_project">ViewProject</string>
 
 </resources>
