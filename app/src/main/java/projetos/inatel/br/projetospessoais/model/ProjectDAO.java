@@ -67,7 +67,7 @@ public class ProjectDAO extends ProjectDBHelper{
     public boolean addImageIfNotExist(Image image){
         Log.d(TAG, "addImageIfNotExist " + image.toString());
         SQLiteDatabase db = this.getWritableDatabase();
-        Cursor cursor = db.query(ProjectContract.IMAGE_TABLE, new String[]{ProjectContract.Column.ID},ProjectContract.Column.PROJECT_FOREIGN_ID+"=?",new String[]{Integer.toString(image.getProjectId())},null,null,null );
+        Cursor cursor = db.query(ProjectContract.IMAGE_TABLE, new String[]{ProjectContract.Column.ID},ProjectContract.Column.PROJECT_FOREIGN_ID+"=? AND "+ProjectContract.Column.IMAGE+"=?",new String[]{Integer.toString(image.getProjectId()),image.getImage()},null,null,null );
         if(cursor.getCount()<=0){
             addImage(image);
             return true;

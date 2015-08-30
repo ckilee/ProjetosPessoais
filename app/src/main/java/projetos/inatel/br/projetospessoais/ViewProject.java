@@ -31,6 +31,12 @@ public class ViewProject extends Activity {
 
     }
 
+    @Override
+    protected void onPause() {
+        super.onPause();
+        finish();
+    }
+
     private void configureProjectInformation() {
         TextView projectNameTV = (TextView)super.findViewById(R.id.project_name_view);
         projectNameTV.setText(project.getName());

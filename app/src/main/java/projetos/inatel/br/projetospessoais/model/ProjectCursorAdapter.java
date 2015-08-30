@@ -14,6 +14,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.SimpleCursorAdapter;
+import android.widget.TextView;
 
 import java.io.File;
 import java.io.IOException;
@@ -62,6 +63,7 @@ public class ProjectCursorAdapter extends SimpleCursorAdapter{
     @Override
     public View getView(int position, View convertView, ViewGroup parent) {
         View view = super.getView(position, convertView, parent);
+
         if (cursor.isClosed()) {
             return view;
         }
@@ -85,6 +87,9 @@ public class ProjectCursorAdapter extends SimpleCursorAdapter{
                 e.printStackTrace();
             }
         }
+
+        TextView projectIdTV = (TextView)view.findViewById(R.id.projectIdTextView);
+        projectIdTV.setText(Integer.toString(projectId));
         /*Integer idCloud = cursor.getInt(idCloudIndex);
         String imagePath = cursor.getString(imageFileIndex);
         Log.d(TAG, "getView " + position + " idCloud: " + idCloud + " imagePath: " +
@@ -98,8 +103,9 @@ public class ProjectCursorAdapter extends SimpleCursorAdapter{
         View.OnTouchListener backListener=new View.OnTouchListener(){
             public boolean onTouch(    View v,    MotionEvent event){
                 if (event.getAction() == MotionEvent.ACTION_UP) {
+                    TextView projectIdTV = (TextView)v.findViewById(R.id.projectIdTextView);
                     Intent intent = new Intent(MainActivity.getInstance(), ViewProject.class);
-                    intent.putExtra("projectId",projectId);
+                    intent.putExtra("projectId",Integer.parseInt(projectIdTV.getText().toString()));
                     MainActivity.getInstance().startActivity(intent);
                     return false;
                 }

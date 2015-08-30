@@ -71,4 +71,13 @@
         android:text="Date"
         android:textStyle="bold" />
 
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:textAppearance="?android:attr/textAppearanceSmall"
+        android:id="@+id/projectIdTextView"
+        android:layout_below="@+id/item_date"
+        android:layout_alignParentEnd="true"
+        android:visibility="invisible" />
+
 </RelativeLayout>

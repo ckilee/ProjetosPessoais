@@ -149,6 +149,11 @@ public class MainActivity extends Activity {
         View.OnClickListener listenerRefresh = new View.OnClickListener() {
             @Override
             public void onClick(View v){
+                Button btnRefresh = (Button) MainActivity.getInstance().findViewById(R.id.btn_refresh);
+                btnRefresh.setText("Refreshing");
+                btnRefresh.setEnabled(false);
+                Button btnAdd = (Button) MainActivity.getInstance().findViewById(R.id.btn_add_project);
+                btnAdd.setEnabled(false);
                 new GetFromWeb().execute();
 
                 //refreshWithWebService();
@@ -158,6 +163,13 @@ public class MainActivity extends Activity {
             }
         };
         btnRefresh.setOnClickListener(listenerRefresh);
+    }
+
+    private void forceRefreshActivity(){
+        refreshWithWebService();
+        Intent intent = getIntent();
+        finish();
+        startActivity(intent);
     }
 
     private void refreshWithWebService(){
@@ -248,6 +260,7 @@ public class MainActivity extends Activity {
             //insertIntoDatabase(projectId);
             Toast.makeText(MainActivity.this, "Download of projects has been concluded.",
                     Toast.LENGTH_SHORT).show();
+            MainActivity.getInstance().forceRefreshActivity();
         }
 
         private String getJson(String url){
